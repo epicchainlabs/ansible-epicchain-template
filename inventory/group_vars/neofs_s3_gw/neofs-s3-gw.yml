@@ -1,0 +1,45 @@
+---
+
+
+neofs_s3__group_config:
+
+  - options:
+      connect_timeout: 10s
+      stream_timeout: 10s
+      healthcheck_timeout: 15s
+      rebalance_interval: 60s
+      pool_error_threshold: 100
+      max_clients_count: 1000
+      max_clients_deadline: 30s
+
+      cache:
+        objects:
+          lifetime: 300s
+          size: 150
+        list:
+          lifetime: 1m
+          size: 100
+        names:
+          lifetime: 1m
+          size: 1000
+        buckets:
+          lifetime: 1m
+          size: 500
+        system:
+          lifetime: 2m
+          size: 1000
+        accessbox:
+          lifetime: 5m
+          size: 10
+        accesscontrol:
+          lifetime: 1m
+          size: 100000
+      
+      placement_policy:
+        default: REP 1
+      
+      cors:
+        default_max_age: 600
+      
+      neofs:
+        set_copies_number: 0

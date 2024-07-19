@@ -1,0 +1,15 @@
+---
+
+#neofs_ir__data_dir: ''
+
+neofs_ir__group_config:
+  - options:
+      without_mainnet: True
+
+neofs_ir__blockchain_p2p_port: 10000
+neofs_ir__blockchain_rpc_port: 10001
+
+neofs_ir__blockchain_seed_nodes: >-
+  [ {% for host in groups['neofs_ir'] %}
+    {{- "'" + hostvars[host].ansible_host + ":" + neofs_ir__blockchain_p2p_port|string + "', " -}}
+  {% endfor %} ]

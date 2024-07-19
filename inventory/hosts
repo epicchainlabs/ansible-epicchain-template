@@ -1,0 +1,19 @@
+#
+
+[all]
+node01  ansible_host=
+node02  ansible_host=
+node03  ansible_host=
+node04  ansible_host=
+
+[neofs_ir]
+node0[1:4]
+
+[neofs_storage]
+node0[1:4]
+
+[neofs_http_gw:children]
+neofs_storage
+
+[neofs_s3_gw:children]
+neofs_storage

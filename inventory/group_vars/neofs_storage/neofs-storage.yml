@@ -1,0 +1,69 @@
+---
+
+#neofs_storage__data_parts: 1
+#neofs_storage__meta_parts: 1
+
+#neofs_storage__data_dir: '/srv/neofs'
+#neofs_storage__meta_dir: '/srv/neofs'
+
+neofs_storage__announce_addresses: [ '{{ hostvars[inventory_hostname].ansible_host }}:{{ neofs_storage__grpc_port }}' ]
+
+neofs_storage__morph_endpoints: >-
+  [ {% for host in groups['neofs_ir'] %}
+    {{- "'ws://" + hostvars[host].ansible_host + ":10001/ws', " -}}
+  {% endfor %} ]
+
+neofs_storage__group_config:
+  - replace: True
+    path: object
+    options:
+      put:
+        pool_size_remote: 800
+  - path: storage
+    options:
+      shard_pool_size: 600
+      shard_ro_error_threshold: 30
+      shard:
+        default:
+          compress: True                 # turn on/off zstd(level 3) compression of stored objects
+          small_object_size: 150kb       # size threshold for "small" objects which are cached in key-value DB, not in FS, bytes
+          writecache:
+            enabled: True
+            small_size: 128kb            # size threshold for "small" objects which are cached in key-value DB, not in FS, bytes
+            max_object_size: 128mb       # size threshold for "big" objects which bypass write-cache and go to the storage directly, bytes
+            workers_number: 128          # number of write-cache flusher threads
+            capacity: 64gb
+          metabase:
+            max_batch_size: 1000
+          blobstor:
+            - size: 64gb                 # approximate size limit of single blobovnicza instance, total size will be: size*width^(depth+1), bytes
+              depth: 1                   # max depth of object tree storage in key-value DB
+              width: 8                   # max width of object tree storage in key-value DB
+              opened_cache_capacity: 32  # maximum number of opened database files
+            - depth: 4                   # max depth of object tree storage in FS
+          gc:
+            remover_batch_size: 100      # number of objects to be removed by the garbage collector
+            remover_sleep_interval: 1m   # frequency of the garbage collector invocation
+
+  - path: storage
+    options:
+      shard:
+        default:
+          pilorama:
+            max_batch_delay: 10ms
+            max_batch_size: 1000
+            no_sync: True
+        0:
+          pilorama:
+            path: '{{ neofs_storage__meta_dir }}/meta/pilorama0.db'
+
+
+  - replace: True
+    path: tree
+    options:
+      enabled: true
+      cache_size: 15
+      replication_worker_count: 32
+      replication_channel_capacity: 32
+      replication_timeout: 5s
+      sync_interval: 1h

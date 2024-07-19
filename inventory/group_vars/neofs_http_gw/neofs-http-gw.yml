@@ -1,0 +1,9 @@
+---
+
+neofs_http__http_address: '::'
+
+neofs_http__group_config:
+  - options:
+      connect_timeout: 60s
+      request_timeout: 300s
+      rebalance_timer: 5m

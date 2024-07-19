@@ -1,0 +1,21 @@
+rpc-endpoint: http://node01:10001
+alphabet-wallets: inventory/configuration/alphabet
+network:
+  max_object_size: 134217728
+  epoch_duration: 450
+  basic_income_rate: 0
+  homomorphic_hash_disabled: true
+  fee:
+    audit: 0
+    candidate: 0
+    container: 0
+    container_alias: 0
+    withdraw: 0
+credentials:
+  contract: ''
+  az: ''
+  buky: ''
+  vedi: ''
+  glagoli: ''
+storage:
+  empty: ''

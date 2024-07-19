@@ -1,0 +1,7 @@
+---
+collections:
+#  - name: nspcc.neofs
+#    version: master
+  - name: https://github.com/nspcc-dev/ansible-neofs
+    type: git
+    version: 'master'
